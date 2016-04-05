@@ -27,6 +27,35 @@ MY_Scene_Main::MY_Scene_Main(Game * _game) :
 	
 	screenSurface->setScaleMode(GL_NEAREST);
 	screenSurface->uvEdgeMode = GL_CLAMP_TO_BORDER;
+
+
+	NodeUI * dash = new NodeUI(uiLayer->world);
+	uiLayer->addChild(dash);
+	dash->setRationalWidth(1.f, uiLayer);
+	dash->setRationalHeight(1.f, uiLayer);
+	dash->background->mesh->setScaleMode(GL_NEAREST);
+	dash->background->mesh->pushTexture2D(MY_ResourceManager::globalAssets->getTexture("dash")->texture);
+
+	wheel = new NodeUI(uiLayer->world);
+	uiLayer->addChild(wheel);
+	wheel->setRationalWidth(29/64.f, uiLayer);
+	wheel->setRationalHeight(29/64.f, uiLayer);
+	wheel->setMarginLeft(17/64.f);
+	wheel->setMarginBottom(8/64.f);
+	wheel->boxSizing = kCONTENT_BOX;
+	wheel->background->mesh->setScaleMode(GL_NEAREST);
+	wheel->background->mesh->pushTexture2D(MY_ResourceManager::globalAssets->getTexture("wheel")->texture);
+	wheel->background->meshTransform->translate(glm::vec3(-0.5, -0.5, 0));
+
+
+	NodeUI * dashMask = new NodeUI(uiLayer->world);
+	uiLayer->addChild(dashMask);
+	dashMask->setRationalWidth(1.f, uiLayer);
+	dashMask->setRationalHeight(1.f, uiLayer);
+	dashMask->background->mesh->setScaleMode(GL_NEAREST);
+	dashMask->background->mesh->pushTexture2D(MY_ResourceManager::globalAssets->getTexture("dash-mask")->texture);
+
+	sweet::setCursorMode(GLFW_CURSOR_DISABLED);
 }
 
 MY_Scene_Main::~MY_Scene_Main(){
@@ -38,6 +67,7 @@ MY_Scene_Main::~MY_Scene_Main(){
 
 
 void MY_Scene_Main::update(Step * _step){
+	wheel->background->childTransform->setOrientation(glm::angleAxis(32.f - (float)mouse->mouseX()/sweet::getWindowWidth() * 64.f, glm::vec3(0,0,1)));
 	uiLayer->resize(0, 64, 0, 64);
 	// Screen shader update
 	// Screen shaders are typically loaded from a file instead of built using components, so to update their uniforms
