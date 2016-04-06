@@ -14,6 +14,7 @@ public:
 
 
 	NodeUI * wheel;
+	float turningAngle;
 
 
 	virtual void update(Step * _step) override;

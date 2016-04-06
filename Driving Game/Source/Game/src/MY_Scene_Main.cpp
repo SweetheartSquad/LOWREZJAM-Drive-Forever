@@ -12,13 +12,16 @@
 #include <shader\ShaderComponentUvOffset.h>
 #include <shader\ShaderComponentHsv.h>
 
+#include <Easing.h>
+
 #include <MY_Game.h>
 
 MY_Scene_Main::MY_Scene_Main(Game * _game) :
 	MY_Scene_Base(_game),
 	screenSurfaceShader(new Shader("assets/RenderSurface_1", false, true)),
 	screenSurface(new RenderSurface(screenSurfaceShader, true)),
-	screenFBO(new StandardFrameBuffer(true))
+	screenFBO(new StandardFrameBuffer(true)),
+	turningAngle(0)
 {
 	// memory management
 	screenSurface->incrementReferenceCount();
@@ -67,7 +70,9 @@ MY_Scene_Main::~MY_Scene_Main(){
 
 
 void MY_Scene_Main::update(Step * _step){
-	wheel->background->childTransform->setOrientation(glm::angleAxis(32.f - (float)mouse->mouseX()/sweet::getWindowWidth() * 64.f, glm::vec3(0,0,1)));
+	float turningAngleNew = 30.f - Easing::linear((float)mouse->mouseX(false), 0, 60, sweet::getWindowWidth());
+	turningAngle += (turningAngleNew - turningAngle)*0.1f;
+	wheel->background->childTransform->setOrientation(glm::angleAxis(turningAngle, glm::vec3(0,0,1)));
 	uiLayer->resize(0, 64, 0, 64);
 	// Screen shader update
 	// Screen shaders are typically loaded from a file instead of built using components, so to update their uniforms
