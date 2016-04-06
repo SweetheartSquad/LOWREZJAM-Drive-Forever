@@ -13,6 +13,8 @@
 #include <shader\ShaderComponentHsv.h>
 
 #include <Easing.h>
+#include <NumberUtils.h>
+#include <PointLight.h>
 
 #include <MY_Game.h>
 
@@ -31,7 +33,37 @@ MY_Scene_Main::MY_Scene_Main(Game * _game) :
 	screenSurface->setScaleMode(GL_NEAREST);
 	screenSurface->uvEdgeMode = GL_CLAMP_TO_BORDER;
 
+	// GAME
+	
+	Transform * treesL = new Transform();
+	childTransform->addChild(treesL, false);
+	Transform * treesR = new Transform();
+	childTransform->addChild(treesR, false);
 
+	int numTrees = 100;
+	float gap = 4;
+	TriMesh * const treeMesh = MY_ResourceManager::globalAssets->getMesh("tree")->meshes.at(0);
+	treeMesh->setScaleMode(GL_NEAREST);
+	treeMesh->pushTexture2D(MY_ResourceManager::globalAssets->getTexture("tree")->texture);
+	for(unsigned long int i = 0; i < numTrees; ++i){
+		MeshEntity * m = new MeshEntity(treeMesh, baseShader);
+		treesL->addChild(m)->translate(0, 0, i)->scale(sweet::NumberUtils::randomFloat(0.5, 1.5));
+		
+		m = new MeshEntity(treeMesh, baseShader);
+		treesR->addChild(m)->translate(0, 0, i)->scale(sweet::NumberUtils::randomFloat(0.5, 1.5));
+	}
+	
+	treesL->translate(-gap/2.f, 0, 0)->lookAt(glm::vec3(0,0,numTrees));
+	treesR->translate(gap/2.f, 0, 0)->lookAt(glm::vec3(0,0,numTrees));
+
+
+
+	PointLight * pl = new PointLight(glm::vec3(1), 0, 0.05f, -1);
+	activeCamera->childTransform->addChild(pl,false);
+	lights.push_back(pl);
+
+
+	// UI
 	NodeUI * dash = new NodeUI(uiLayer->world);
 	uiLayer->addChild(dash);
 	dash->setRationalWidth(1.f, uiLayer);
@@ -70,10 +102,6 @@ MY_Scene_Main::~MY_Scene_Main(){
 
 
 void MY_Scene_Main::update(Step * _step){
-	float turningAngleNew = 30.f - Easing::linear((float)mouse->mouseX(false), 0, 60, sweet::getWindowWidth());
-	turningAngle += (turningAngleNew - turningAngle)*0.1f;
-	wheel->background->childTransform->setOrientation(glm::angleAxis(turningAngle, glm::vec3(0,0,1)));
-	uiLayer->resize(0, 64, 0, 64);
 	// Screen shader update
 	// Screen shaders are typically loaded from a file instead of built using components, so to update their uniforms
 	// we need to use the OpenGL API calls
@@ -91,8 +119,25 @@ void MY_Scene_Main::update(Step * _step){
 		screenSurfaceShader->loadFromFile(screenSurfaceShader->vertSource, screenSurfaceShader->fragSource);
 		screenSurfaceShader->load();
 	}
+
+	// terrain
+	//treeWheelL->rotate(1, 0, 1, 0, kOBJECT);
+	//treeWheelR->rotate(-1, 0, 1, 0, kOBJECT);
+
+	// player controls
+	float turningAngleNew = 30.f - Easing::linear((float)mouse->mouseX(false), 0, 60, sweet::getWindowWidth());
+	turningAngle += (turningAngleNew - turningAngle)*0.1f;
+	wheel->background->childTransform->setOrientation(glm::angleAxis(turningAngle, glm::vec3(0,0,1)));
+	
+	
+
+	if(mouse->leftDown()){
+		activeCamera->firstParent()->translate(activeCamera->forwardVectorRotated * 0.1f);
+	}
+	
 	
 	// Scene update
+	uiLayer->resize(0, 64, 0, 64);
 	MY_Scene_Base::update(_step);
 }
 
@@ -106,7 +151,7 @@ void MY_Scene_Main::render(sweet::MatrixStack * _matrixStack, RenderOptions * _r
 	// keep our screen framebuffer up-to-date with the current viewport
 	screenFBO->resize(64, 64);
 	_renderOptions->setViewPort(0,0,64,64);
-	_renderOptions->setClearColour(1,0,1,0);
+	_renderOptions->setClearColour(0,0,0,0);
 
 	// bind our screen framebuffer
 	FrameBufferInterface::pushFbo(screenFBO);

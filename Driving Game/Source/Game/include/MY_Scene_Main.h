@@ -15,6 +15,8 @@ public:
 
 	NodeUI * wheel;
 	float turningAngle;
+	
+	std::vector<MeshEntity *> trees;
 
 
 	virtual void update(Step * _step) override;

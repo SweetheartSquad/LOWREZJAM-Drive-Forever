@@ -26,5 +26,20 @@
       "src": "wheel.png",
       "generateMipmaps": false
     }
+
+
+    ,{
+      "type": "texture",
+      "id": "tree",
+      "src": "tree.png",
+      "generateMipmaps": false
+    },
+
+
+    {
+      "type": "mesh",
+      "id": "tree",
+      "src": "tree.obj"
+    }
   ]
 }

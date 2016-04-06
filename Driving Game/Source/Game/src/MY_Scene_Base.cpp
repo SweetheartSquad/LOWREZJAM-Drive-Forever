@@ -27,7 +27,7 @@ MY_Scene_Base::MY_Scene_Base(Game * _game) :
 	controller(new JoystickVirtual(0))
 {
 	baseShader->addComponent(new ShaderComponentMVP(baseShader));
-	baseShader->addComponent(new ShaderComponentDiffuse(baseShader));
+	baseShader->addComponent(new ShaderComponentDiffuse(baseShader, true));
 	baseShader->addComponent(new ShaderComponentTexture(baseShader));
 	baseShader->compileShader();
 	baseShader->name = "MY_Scene_Base base shader";
