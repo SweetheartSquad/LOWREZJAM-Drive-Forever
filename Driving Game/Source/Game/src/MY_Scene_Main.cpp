@@ -90,6 +90,14 @@ MY_Scene_Main::MY_Scene_Main(Game * _game) :
 	wheel->background->mesh->setScaleMode(GL_NEAREST);
 	wheel->background->mesh->pushTexture2D(MY_ResourceManager::globalAssets->getTexture("wheel")->texture);
 	wheel->background->meshTransform->translate(glm::vec3(-0.5, -0.5, 0));
+
+	
+	speedUI = new NodeUI(uiLayer->world);
+	uiLayer->addChild(speedUI);
+	speedUI->setRationalHeight(1.f, uiLayer);
+	speedUI->setRationalWidth(1.f, uiLayer);
+	speedUI->background->mesh->setScaleMode(GL_NEAREST);
+	updateSpeedUI();
 	
 	healthUI = new NodeUI(uiLayer->world);
 	uiLayer->addChild(healthUI);
@@ -228,6 +236,7 @@ void MY_Scene_Main::update(Step * _step){
 		speed = 0;
 	}
 
+	updateSpeedUI();
 	
 	// Scene update
 	uiLayer->resize(0, 64, 0, 64);
@@ -287,4 +296,9 @@ void MY_Scene_Main::damage(){
 
 void MY_Scene_Main::updateHealthUI(){
 	healthUI->background->mesh->replaceTextures(MY_ResourceManager::globalAssets->getTexture("health_" + std::to_string(health))->texture);
+}
+
+void MY_Scene_Main::updateSpeedUI(){
+	int s = (int)glm::clamp(speed * 4.f / 0.3f, 0.f, 4.f);
+	speedUI->background->mesh->replaceTextures(MY_ResourceManager::globalAssets->getTexture("speed_" + std::to_string(s))->texture);
 }

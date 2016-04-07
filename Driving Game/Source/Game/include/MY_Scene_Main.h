@@ -19,7 +19,7 @@ public:
 	const float length, const gap;
 
 
-	NodeUI * wheel, * healthUI;
+	NodeUI * wheel, * healthUI, * speedUI;
 	float turningAngle;
 	int health;
 	
@@ -43,4 +43,5 @@ public:
 
 	void damage();
 	void updateHealthUI();
+	void updateSpeedUI();
 };

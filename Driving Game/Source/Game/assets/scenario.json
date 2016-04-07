@@ -49,6 +49,33 @@
       "generateMipmaps": false
     }
 
+    ,{
+      "type": "texture",
+      "id": "speed_0",
+      "src": "speed_0.png",
+      "generateMipmaps": false
+    },{
+      "type": "texture",
+      "id": "speed_1",
+      "src": "speed_1.png",
+      "generateMipmaps": false
+    },{
+      "type": "texture",
+      "id": "speed_2",
+      "src": "speed_2.png",
+      "generateMipmaps": false
+    },{
+      "type": "texture",
+      "id": "speed_3",
+      "src": "speed_3.png",
+      "generateMipmaps": false
+    },{
+      "type": "texture",
+      "id": "speed_4",
+      "src": "speed_4.png",
+      "generateMipmaps": false
+    }
+
 
     ,{
       "type": "texture",
