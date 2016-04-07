@@ -149,7 +149,10 @@ void MY_Scene_Main::update(Step * _step){
 
 	// player controls
 	float turningAngleNew = Easing::linear((float)mouse->mouseX(false), 0.5, -1.f, sweet::getWindowWidth());
-	turningAngle += (turningAngleNew - turningAngle)*0.05f;
+	float d = (turningAngleNew - turningAngle)*0.05f;
+	if(glm::abs(d) > FLT_EPSILON){
+		turningAngle += d;
+	}
 	wheel->background->childTransform->setOrientation(glm::angleAxis(turningAngle*60.f, glm::vec3(0,0,1)));
 	
 	gameCam->yaw = -90 + turningAngle;
