@@ -23,7 +23,10 @@ MY_Scene_Main::MY_Scene_Main(Game * _game) :
 	screenSurfaceShader(new Shader("assets/RenderSurface_1", false, true)),
 	screenSurface(new RenderSurface(screenSurfaceShader, true)),
 	screenFBO(new StandardFrameBuffer(true)),
-	turningAngle(0)
+	turningAngle(0),
+	speed(0),
+	length(100),
+	gap(4)
 {
 	// memory management
 	screenSurface->incrementReferenceCount();
@@ -40,27 +43,23 @@ MY_Scene_Main::MY_Scene_Main(Game * _game) :
 	Transform * treesR = new Transform();
 	childTransform->addChild(treesR, false);
 
-	int numTrees = 100;
-	float gap = 4;
+	int numTrees = 50;
 	TriMesh * const treeMesh = MY_ResourceManager::globalAssets->getMesh("tree")->meshes.at(0);
 	treeMesh->setScaleMode(GL_NEAREST);
 	treeMesh->pushTexture2D(MY_ResourceManager::globalAssets->getTexture("tree")->texture);
 	for(unsigned long int i = 0; i < numTrees; ++i){
 		MeshEntity * m = new MeshEntity(treeMesh, baseShader);
-		treesL->addChild(m)->translate(0, 0, i)->scale(sweet::NumberUtils::randomFloat(0.5, 1.5));
+		treesL->addChild(m)->translate(0, 0, (float)i*length/numTrees)->scale(sweet::NumberUtils::randomFloat(0.25, 1.5));
+		trees.push_back(m);
 		
 		m = new MeshEntity(treeMesh, baseShader);
-		treesR->addChild(m)->translate(0, 0, i)->scale(sweet::NumberUtils::randomFloat(0.5, 1.5));
+		treesR->addChild(m)->translate(0, 0, (float)i*length/numTrees)->scale(sweet::NumberUtils::randomFloat(0.25, 1.5));
+		trees.push_back(m);
+
 	}
 	
 	treesL->translate(-gap/2.f, 0, 0)->lookAt(glm::vec3(0,0,numTrees));
 	treesR->translate(gap/2.f, 0, 0)->lookAt(glm::vec3(0,0,numTrees));
-
-
-
-	PointLight * pl = new PointLight(glm::vec3(1), 0, 0.05f, -1);
-	activeCamera->childTransform->addChild(pl,false);
-	lights.push_back(pl);
 
 
 	// UI
@@ -91,6 +90,23 @@ MY_Scene_Main::MY_Scene_Main(Game * _game) :
 	dashMask->background->mesh->pushTexture2D(MY_ResourceManager::globalAssets->getTexture("dash-mask")->texture);
 
 	sweet::setCursorMode(GLFW_CURSOR_DISABLED);
+
+
+
+	gameCam = new PerspectiveCamera();
+	gameCam->fieldOfView = 20;
+	gameCam->yaw = -90;
+	gameCam->pitch = -2.5;
+	gameCam->interpolation = 1.f;
+	childTransform->addChild(gameCam)->translate(0, 0.25, 0);
+	activeCamera = gameCam;
+	cameras.push_back(gameCam);
+
+
+
+	PointLight * pl = new PointLight(glm::vec3(1), 0, 0.05f, -1);
+	gameCam->childTransform->addChild(pl,false);
+	lights.push_back(pl);
 }
 
 MY_Scene_Main::~MY_Scene_Main(){
@@ -125,16 +141,34 @@ void MY_Scene_Main::update(Step * _step){
 	//treeWheelR->rotate(-1, 0, 1, 0, kOBJECT);
 
 	// player controls
-	float turningAngleNew = 30.f - Easing::linear((float)mouse->mouseX(false), 0, 60, sweet::getWindowWidth());
+	float turningAngleNew = Easing::linear((float)mouse->mouseX(false), 0.5, -1.f, sweet::getWindowWidth());
 	turningAngle += (turningAngleNew - turningAngle)*0.1f;
-	wheel->background->childTransform->setOrientation(glm::angleAxis(turningAngle, glm::vec3(0,0,1)));
+	wheel->background->childTransform->setOrientation(glm::angleAxis(turningAngle*30.f, glm::vec3(0,0,1)));
 	
 	
 
 	if(mouse->leftDown()){
-		activeCamera->firstParent()->translate(activeCamera->forwardVectorRotated * 0.1f);
+		speed += 0.025;
+	}else{
+		speed -= 0.01;
 	}
-	
+	speed *= 0.95f;
+	if(speed > FLT_EPSILON){
+		for(auto t : trees){
+			t->firstParent()->translate(0, 0, -speed);
+			if(t->firstParent()->getTranslationVector().z < 0){
+				t->firstParent()->translate(0, 0, length);
+			}
+		}
+
+		gameCam->firstParent()->translate(turningAngle*speed, 0, 0);
+		glm::vec3 v = gameCam->firstParent()->getTranslationVector();
+		v.x = glm::clamp(v.x, -gap/2.5f, gap/2.5f);
+		gameCam->firstParent()->translate(v, false);
+	}else{
+		speed = 0;
+	}
+
 	
 	// Scene update
 	uiLayer->resize(0, 64, 0, 64);

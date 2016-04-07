@@ -12,6 +12,11 @@ public:
 	StandardFrameBuffer * screenFBO;
 
 
+	PerspectiveCamera * gameCam;
+	float speed;
+
+	const float length, const gap;
+
 
 	NodeUI * wheel;
 	float turningAngle;
