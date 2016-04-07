@@ -22,6 +22,7 @@ public:
 	float turningAngle;
 	
 	std::vector<MeshEntity *> trees;
+	MeshEntity * road;
 
 
 	virtual void update(Step * _step) override;

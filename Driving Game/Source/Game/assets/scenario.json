@@ -33,13 +33,21 @@
       "id": "tree",
       "src": "tree.png",
       "generateMipmaps": false
-    },
+    },{
+      "type": "texture",
+      "id": "road",
+      "src": "road.png",
+      "generateMipmaps": false
+    }
 
-
-    {
+    ,{
       "type": "mesh",
       "id": "tree",
       "src": "tree.obj"
+    },{
+      "type": "mesh",
+      "id": "road",
+      "src": "road.obj"
     }
   ]
 }

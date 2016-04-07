@@ -26,7 +26,7 @@ MY_Scene_Main::MY_Scene_Main(Game * _game) :
 	turningAngle(0),
 	speed(0),
 	length(100),
-	gap(4)
+	gap(3)
 {
 	// memory management
 	screenSurface->incrementReferenceCount();
@@ -38,6 +38,13 @@ MY_Scene_Main::MY_Scene_Main(Game * _game) :
 
 	// GAME
 	
+	road = new MeshEntity(MY_ResourceManager::globalAssets->getMesh("road")->meshes.at(0), baseShader);
+	road->mesh->setScaleMode(GL_NEAREST);
+	road->mesh->pushTexture2D(MY_ResourceManager::globalAssets->getTexture("road")->texture);
+	
+	childTransform->addChild(road)->scale(gap*0.75, 1, length)->translate(0, 0, length/2);
+
+
 	Transform * treesL = new Transform();
 	childTransform->addChild(treesL, false);
 	Transform * treesR = new Transform();
@@ -104,7 +111,7 @@ MY_Scene_Main::MY_Scene_Main(Game * _game) :
 
 
 
-	PointLight * pl = new PointLight(glm::vec3(1), 0, 0.05f, -1);
+	PointLight * pl = new PointLight(glm::vec3(2), 0, 0.1f, -1);
 	gameCam->childTransform->addChild(pl,false);
 	lights.push_back(pl);
 }
@@ -142,10 +149,10 @@ void MY_Scene_Main::update(Step * _step){
 
 	// player controls
 	float turningAngleNew = Easing::linear((float)mouse->mouseX(false), 0.5, -1.f, sweet::getWindowWidth());
-	turningAngle += (turningAngleNew - turningAngle)*0.1f;
-	wheel->background->childTransform->setOrientation(glm::angleAxis(turningAngle*30.f, glm::vec3(0,0,1)));
+	turningAngle += (turningAngleNew - turningAngle)*0.05f;
+	wheel->background->childTransform->setOrientation(glm::angleAxis(turningAngle*60.f, glm::vec3(0,0,1)));
 	
-	
+	gameCam->yaw = -90 + turningAngle;
 
 	if(mouse->leftDown()){
 		speed += 0.025;
@@ -161,9 +168,14 @@ void MY_Scene_Main::update(Step * _step){
 			}
 		}
 
-		gameCam->firstParent()->translate(turningAngle*speed, 0, 0);
+		for(auto & v : road->mesh->vertices){
+			v.v += speed*0.01;
+		}
+		road->mesh->dirty = true;
+
+		gameCam->firstParent()->translate(turningAngle*speed*0.025f, 0, 0);
 		glm::vec3 v = gameCam->firstParent()->getTranslationVector();
-		v.x = glm::clamp(v.x, -gap/2.5f, gap/2.5f);
+		v.x = glm::clamp(v.x, -gap/2* 0.65f, gap/2* 0.65f);
 		gameCam->firstParent()->translate(v, false);
 	}else{
 		speed = 0;
