@@ -193,11 +193,11 @@ void MY_Scene_Main::update(Step * _step){
 	gameCam->yaw = -90 + turningAngle;
 
 	if(mouse->leftDown()){
-		speed += 0.025;
+		speed += 0.004;
 	}else{
-		speed -= 0.01;
+		speed -= 0.0035;
 	}
-	speed *= 0.95f;
+	speed *= 0.99f;
 	if(speed > FLT_EPSILON){
 		for(auto t : trees){
 			t->firstParent()->translate(0, 0, -speed);
@@ -217,11 +217,11 @@ void MY_Scene_Main::update(Step * _step){
 		if(v.x < -gap/2 * 0.75f){
 			damage();
 			v.x = -gap/2 * 0.7f;
-			turningAngle = 7.5;
+			turningAngle = 5;
 		}if(v.x > gap/2 * 0.75f){
 			damage();
 			v.x = gap/2 * 0.7f;
-			turningAngle = -7.5;
+			turningAngle = -5;
 		}
 		gameCam->firstParent()->translate(v, false);
 	}else{
