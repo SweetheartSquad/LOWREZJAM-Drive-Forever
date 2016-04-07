@@ -16,6 +16,8 @@
 #include <NumberUtils.h>
 #include <PointLight.h>
 
+#include <sweet\UI.h>
+
 #include <MY_Game.h>
 
 MY_Scene_Main::MY_Scene_Main(Game * _game) :
@@ -26,7 +28,8 @@ MY_Scene_Main::MY_Scene_Main(Game * _game) :
 	turningAngle(0),
 	speed(0),
 	length(100),
-	gap(3)
+	gap(3),
+	health(3)
 {
 	// memory management
 	screenSurface->incrementReferenceCount();
@@ -87,7 +90,22 @@ MY_Scene_Main::MY_Scene_Main(Game * _game) :
 	wheel->background->mesh->setScaleMode(GL_NEAREST);
 	wheel->background->mesh->pushTexture2D(MY_ResourceManager::globalAssets->getTexture("wheel")->texture);
 	wheel->background->meshTransform->translate(glm::vec3(-0.5, -0.5, 0));
+	
+	healthUI = new NodeUI(uiLayer->world);
+	uiLayer->addChild(healthUI);
+	healthUI->setRationalHeight(1.f, uiLayer);
+	healthUI->setRationalWidth(1.f, uiLayer);
+	healthUI->background->mesh->setScaleMode(GL_NEAREST);
+	updateHealthUI();
 
+
+	txt = new TextLabel(uiLayer->world, font, textShader);
+	uiLayer->addChild(txt);
+	txt->setRationalHeight(1.f, uiLayer);
+	txt->setRationalWidth(1.f, uiLayer);
+	txt->verticalAlignment = kMIDDLE;
+	//txt->setMargin(2.f/64.f);
+	//txt->setMarginBottom(32.f/64.f);
 
 	NodeUI * dashMask = new NodeUI(uiLayer->world);
 	uiLayer->addChild(dashMask);
@@ -97,7 +115,6 @@ MY_Scene_Main::MY_Scene_Main(Game * _game) :
 	dashMask->background->mesh->pushTexture2D(MY_ResourceManager::globalAssets->getTexture("dash-mask")->texture);
 
 	sweet::setCursorMode(GLFW_CURSOR_DISABLED);
-
 
 
 	gameCam = new PerspectiveCamera();
@@ -134,6 +151,24 @@ void MY_Scene_Main::update(Step * _step){
 	if(test != -1){
 		glUniform1f(test, _step->time);
 		checkForGlError(0);
+	}
+	
+
+	if(MY_Game::resized){
+		font->resize(font->getSize());
+		MY_Game::resized = false;
+		txt->invalidate();
+		txt->updateText();
+		txt->invalidateLayout();
+	}
+
+	if(_step->cycles % 10 == 0){
+		std::wstring s = txt->getText(false);
+		if(s.length() > 0){
+			txt->setText(txt->getText(false).substr(1));
+		}else{
+			txt->setText(getLine());
+		}
 	}
 
 
@@ -178,7 +213,16 @@ void MY_Scene_Main::update(Step * _step){
 
 		gameCam->firstParent()->translate(turningAngle*speed*0.025f, 0, 0);
 		glm::vec3 v = gameCam->firstParent()->getTranslationVector();
-		v.x = glm::clamp(v.x, -gap/2* 0.65f, gap/2* 0.65f);
+
+		if(v.x < -gap/2 * 0.75f){
+			damage();
+			v.x = -gap/2 * 0.7f;
+			turningAngle = 7.5;
+		}if(v.x > gap/2 * 0.75f){
+			damage();
+			v.x = gap/2 * 0.7f;
+			turningAngle = -7.5;
+		}
 		gameCam->firstParent()->translate(v, false);
 	}else{
 		speed = 0;
@@ -213,6 +257,8 @@ void MY_Scene_Main::render(sweet::MatrixStack * _matrixStack, RenderOptions * _r
 	// render our screen framebuffer using the standard render surface
 	_renderOptions->setViewPort(horz ? offset : 0, horz ? 0 : offset, min, min);
 	screenSurface->render(screenFBO->getTextureId());
+
+	//uiLayer->render(_matrixStack, _renderOptions);
 }
 
 void MY_Scene_Main::load(){
@@ -227,4 +273,18 @@ void MY_Scene_Main::unload(){
 	screenSurface->unload();
 
 	MY_Scene_Base::unload();	
+}
+
+
+std::wstring MY_Scene_Main::getLine(){
+	return L"                " L"This is a sentence.";
+}
+
+void MY_Scene_Main::damage(){
+	--health;
+	updateHealthUI();
+}
+
+void MY_Scene_Main::updateHealthUI(){
+	healthUI->background->mesh->replaceTextures(MY_ResourceManager::globalAssets->getTexture("health_" + std::to_string(health))->texture);
 }

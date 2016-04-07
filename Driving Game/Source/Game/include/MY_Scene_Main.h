@@ -4,6 +4,7 @@
 
 class RenderSurface;
 class StandardFrameBuffer;
+class TextLabel;
 
 class MY_Scene_Main : public MY_Scene_Base{
 public:
@@ -18,11 +19,15 @@ public:
 	const float length, const gap;
 
 
-	NodeUI * wheel;
+	NodeUI * wheel, * healthUI;
 	float turningAngle;
+	int health;
 	
 	std::vector<MeshEntity *> trees;
 	MeshEntity * road;
+
+	Timeout * txtTimeout, * waitTimout;
+	TextLabel * txt;
 
 
 	virtual void update(Step * _step) override;
@@ -33,4 +38,9 @@ public:
 
 	MY_Scene_Main(Game * _game);
 	~MY_Scene_Main();
+
+	std::wstring getLine();
+
+	void damage();
+	void updateHealthUI();
 };

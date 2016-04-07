@@ -30,7 +30,7 @@ void main() {
 
 	// original
 	vec4 orig = vec4(texture(texFramebuffer, Texcoord) );
-
+	
 	// new
 	vec4 col = vec4(texture(texFramebuffer, r) );
 	

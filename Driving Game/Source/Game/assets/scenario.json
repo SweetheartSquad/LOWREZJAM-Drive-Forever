@@ -27,6 +27,28 @@
       "generateMipmaps": false
     }
 
+    ,{
+      "type": "texture",
+      "id": "health_0",
+      "src": "health_0.png",
+      "generateMipmaps": false
+    },{
+      "type": "texture",
+      "id": "health_1",
+      "src": "health_1.png",
+      "generateMipmaps": false
+    },{
+      "type": "texture",
+      "id": "health_2",
+      "src": "health_2.png",
+      "generateMipmaps": false
+    },{
+      "type": "texture",
+      "id": "health_3",
+      "src": "health_3.png",
+      "generateMipmaps": false
+    }
+
 
     ,{
       "type": "texture",
@@ -48,6 +70,15 @@
       "type": "mesh",
       "id": "road",
       "src": "road.obj"
+    }
+
+
+    ,{
+      "type":"font",
+      "id":"font",
+      "src":"slkscr.ttf",
+      "antiAliased":false,
+      "size": "12.8%"
     }
   ]
 }

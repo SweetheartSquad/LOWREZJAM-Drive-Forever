@@ -9,7 +9,8 @@
 bool MY_Game::resized = false;
 
 MY_Game::MY_Game() :
-	Game("menu", new MY_Scene_Menu(this), true) // initialize our game with a menu scene
+	Game("menu", new MY_Scene_Menu(this), true), // initialize our game with a menu scene
+	lastSize(0)
 {
 	sweet::setCursorMode(GLFW_CURSOR_NORMAL);
 }
@@ -27,14 +28,12 @@ void MY_Game::addSplashes(){
 void MY_Game::update(Step * _step){
 	glm::uvec2 sd = sweet::getWindowDimensions();
 	int s = glm::min(sd.x, sd.y);
-	if(sd.x != sd.y){
+	if(sd.x != sd.y && !sweet::config.fullscreen){
 		glfwSetWindowSize(sweet::currentContext, s, s);
-		
 	}
 	if(s != lastSize){
 		resized = true;
 		lastSize = s;
 	}
 	Game::update(_step);
-	resized = false;
 }
