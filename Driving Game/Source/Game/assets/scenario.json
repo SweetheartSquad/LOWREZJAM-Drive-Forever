@@ -97,6 +97,10 @@
       "type": "mesh",
       "id": "road",
       "src": "road.obj"
+    },{
+      "type": "mesh",
+      "id": "car",
+      "src": "car.obj"
     }
 
 

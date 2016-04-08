@@ -26,8 +26,9 @@ public:
 	
 	std::vector<MeshEntity *> trees;
 	MeshEntity * road;
+	std::vector<MeshEntity *> obstacles;
 
-	Timeout * waitTimeout;
+	Timeout * waitTimeout, * damageTimeout;
 	TextLabel * txt;
 	Phrases lines;
 

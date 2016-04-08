@@ -67,7 +67,18 @@ MY_Scene_Main::MY_Scene_Main(Game * _game) :
 		trees.push_back(m);
 
 	}
+
+	TriMesh * const carMesh = MY_ResourceManager::globalAssets->getMesh("car")->meshes.at(0);
+	carMesh->setScaleMode(GL_NEAREST);
+	carMesh->pushTexture2D(MY_ResourceManager::globalAssets->getTexture("tree")->texture);
 	
+	for(unsigned long int i = 0; i < 1; ++i){
+		MeshEntity * obstacle = new MeshEntity(carMesh, baseShader);
+		childTransform->addChild(obstacle)->translate(0, 0, length);
+		obstacles.push_back(obstacle);
+	}
+
+
 	treesL->translate(-gap/2.f, 0, 0)->lookAt(glm::vec3(0,0,numTrees));
 	treesR->translate(gap/2.f, 0, 0)->lookAt(glm::vec3(0,0,numTrees));
 
@@ -138,14 +149,23 @@ MY_Scene_Main::MY_Scene_Main(Game * _game) :
 	gameCam->yaw = -90;
 	gameCam->pitch = -2.5;
 	gameCam->interpolation = 1.f;
+	gameCam->nearClip = 0.001f;
+	gameCam->farClip = length;
 	childTransform->addChild(gameCam)->translate(0, 0.25, 0);
 	activeCamera = gameCam;
 	cameras.push_back(gameCam);
 
+	damageTimeout = new Timeout(0.5f, [this](sweet::Event * _event){
+		gameCam->pitch = -2.5f;
+	});
+	damageTimeout->eventManager->addEventListener("progress", [this](sweet::Event * _event){
+		float p = _event->getFloatData("progress");
+		gameCam->pitch = Easing::easeOutElastic(p, -7.5, 5.f, 1.f);
+	});
+	childTransform->addChild(damageTimeout, false);
 
-
-	PointLight * pl = new PointLight(glm::vec3(2), 0, 0.1f, -1);
-	gameCam->childTransform->addChild(pl,false);
+	PointLight * pl = new PointLight(glm::vec3(2), 0, 0.5f, -1);
+	childTransform->addChild(pl)->translate(0,0.5,-0.5);
 	lights.push_back(pl);
 }
 
@@ -195,9 +215,13 @@ void MY_Scene_Main::update(Step * _step){
 		screenSurfaceShader->load();
 	}
 
-	// terrain
-	//treeWheelL->rotate(1, 0, 1, 0, kOBJECT);
-	//treeWheelR->rotate(-1, 0, 1, 0, kOBJECT);
+	// move obstacles
+	
+	for(auto o : obstacles){
+		if(o->firstParent()->getTranslationVector().z < length){
+			o->firstParent()->translate(0, 0, 0.25f);
+		}
+	}
 
 	// player controls
 	float turningAngleNew = Easing::linear((float)mouse->mouseX(false), 0.5, -1.f, sweet::getWindowWidth());
@@ -217,9 +241,27 @@ void MY_Scene_Main::update(Step * _step){
 	speed *= 0.99f;
 	if(speed > FLT_EPSILON){
 		for(auto t : trees){
+			// move forward
 			t->firstParent()->translate(0, 0, -speed);
+
+			// cycle
 			if(t->firstParent()->getTranslationVector().z < 0){
 				t->firstParent()->translate(0, 0, length);
+			}
+		}
+		for(auto o : obstacles){
+			// move forward
+			o->firstParent()->translate(0, 0, -speed);
+			
+			glm::vec3 v = o->firstParent()->getTranslationVector();
+			if(v.z < 0){
+				// check collision
+				if(glm::abs(v.x - gameCam->firstParent()->getTranslationVector().x) < 0.5f){
+					damage();
+				}
+
+				// move back
+				o->firstParent()->translate((sweet::NumberUtils::randomBool() ? -1 : 1) * gap*0.125f, 0, sweet::NumberUtils::randomFloat(length, length*2), false);
 			}
 		}
 
@@ -300,6 +342,7 @@ std::wstring MY_Scene_Main::getLine(){
 
 void MY_Scene_Main::damage(){
 	--health;
+	damageTimeout->restart();
 	updateHealthUI();
 }
 
