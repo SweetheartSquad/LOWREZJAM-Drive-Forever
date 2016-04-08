@@ -18,6 +18,7 @@
     <ClCompile Include="src\MY_Scene_Base.cpp" />
     <ClCompile Include="src\MY_Scene_Main.cpp" />
     <ClCompile Include="src\MY_Scene_Menu.cpp" />
+    <ClCompile Include="src\Phrases.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\GameOver.h" />
@@ -26,6 +27,7 @@
     <ClInclude Include="include\MY_Scene_Base.h" />
     <ClInclude Include="include\MY_Scene_Main.h" />
     <ClInclude Include="include\MY_Scene_Menu.h" />
+    <ClInclude Include="include\Phrases.h" />
     <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>

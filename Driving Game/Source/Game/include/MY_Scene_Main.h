@@ -1,6 +1,7 @@
 #pragma once
 
 #include <MY_Scene_Base.h>
+#include <Phrases.h>
 
 class RenderSurface;
 class StandardFrameBuffer;
@@ -26,8 +27,9 @@ public:
 	std::vector<MeshEntity *> trees;
 	MeshEntity * road;
 
-	Timeout * txtTimeout, * waitTimout;
+	Timeout * waitTimeout;
 	TextLabel * txt;
+	Phrases lines;
 
 
 	virtual void update(Step * _step) override;

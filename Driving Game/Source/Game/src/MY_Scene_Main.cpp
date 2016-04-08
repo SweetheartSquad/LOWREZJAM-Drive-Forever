@@ -40,7 +40,7 @@ MY_Scene_Main::MY_Scene_Main(Game * _game) :
 	screenSurface->uvEdgeMode = GL_CLAMP_TO_BORDER;
 
 	// GAME
-	
+
 	road = new MeshEntity(MY_ResourceManager::globalAssets->getMesh("road")->meshes.at(0), baseShader);
 	road->mesh->setScaleMode(GL_NEAREST);
 	road->mesh->pushTexture2D(MY_ResourceManager::globalAssets->getTexture("road")->texture);
@@ -112,8 +112,16 @@ MY_Scene_Main::MY_Scene_Main(Game * _game) :
 	txt->setRationalHeight(1.f, uiLayer);
 	txt->setRationalWidth(1.f, uiLayer);
 	txt->verticalAlignment = kMIDDLE;
+	txt->setRenderMode(kTEXTURE);
 	//txt->setMargin(2.f/64.f);
 	//txt->setMarginBottom(32.f/64.f);
+
+	waitTimeout = new Timeout(10.f, [this](sweet::Event * _event){
+		txt->invalidate();
+		txt->setText(getLine());
+	});
+	childTransform->addChild(waitTimeout, false);
+	txt->setText("                Tutorial text or something.");
 
 	NodeUI * dashMask = new NodeUI(uiLayer->world);
 	uiLayer->addChild(dashMask);
@@ -174,8 +182,9 @@ void MY_Scene_Main::update(Step * _step){
 		std::wstring s = txt->getText(false);
 		if(s.length() > 0){
 			txt->setText(txt->getText(false).substr(1));
-		}else{
-			txt->setText(getLine());
+		}else if(waitTimeout->complete || !waitTimeout->active){
+			waitTimeout->targetSeconds = sweet::NumberUtils::randomFloat(5.f, 10.f);
+			waitTimeout->restart();
 		}
 	}
 
@@ -286,7 +295,7 @@ void MY_Scene_Main::unload(){
 
 
 std::wstring MY_Scene_Main::getLine(){
-	return L"                " L"This is a sentence.";
+	return lines.getPhrase();
 }
 
 void MY_Scene_Main::damage(){
