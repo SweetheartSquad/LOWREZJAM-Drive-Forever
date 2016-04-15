@@ -6,4 +6,5 @@ class Phrases : public PhraseGenerator{
 public:
 	Phrases();
 	std::wstring getPhrase();
+	std::wstring getFirstLine();
 };

@@ -134,7 +134,7 @@ MY_Scene_Main::MY_Scene_Main(Game * _game) :
 		txt->setText(getLine());
 	});
 	childTransform->addChild(waitTimeout, false);
-	txt->setText("                Tutorial text or something.");
+	txt->setText(lines.getFirstLine());
 
 	NodeUI * dashMask = new NodeUI(uiLayer->world);
 	uiLayer->addChild(dashMask);

@@ -53,6 +53,7 @@ void MY_Scene_Menu::update(Step * _step){
 				game->scenes["main"] = new MY_Scene_Main(game);
 			}
 			game->switchScene("main", false);
+			sweet::setCursorMode(GLFW_CURSOR_DISABLED);
 		}
 	}
 

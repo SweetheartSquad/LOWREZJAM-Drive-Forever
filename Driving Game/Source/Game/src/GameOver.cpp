@@ -47,6 +47,7 @@ GameOver::GameOver(Game * _game, float _score) :
 	doneTimeout->start();
 	doneTimeout->name = "done timeout";
 	childTransform->addChild(doneTimeout, false);
+	sweet::setCursorMode(GLFW_CURSOR_NORMAL);
 }
 
 void GameOver::update(Step * _step){

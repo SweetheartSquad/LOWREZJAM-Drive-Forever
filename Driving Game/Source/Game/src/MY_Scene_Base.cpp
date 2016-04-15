@@ -73,6 +73,7 @@ void MY_Scene_Base::update(Step * _step){
 		// if the user hits escape anywhere else, take them to the menu
 		if(game->scenes["menu"] != this){
 			game->switchScene("menu", false);
+			sweet::setCursorMode(GLFW_CURSOR_NORMAL);
 		}
 	}if(keyboard->keyJustDown(GLFW_KEY_F11)){
 		game->toggleFullScreen();
