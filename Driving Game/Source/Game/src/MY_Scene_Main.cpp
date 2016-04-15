@@ -260,7 +260,7 @@ void MY_Scene_Main::update(Step * _step){
 			glm::vec3 v = o->firstParent()->getTranslationVector();
 			if(v.z < 0){
 				// check collision
-				if(glm::abs(v.x - gameCam->firstParent()->getTranslationVector().x) < 0.5f){
+				if(glm::abs(v.x - gameCam->firstParent()->getTranslationVector().x) < 0.3f){
 					damage();
 				}
 
