@@ -16,6 +16,7 @@ public:
 
 	PerspectiveCamera * gameCam;
 	float speed;
+	float distanceTravelled;
 
 	const float length, const gap;
 

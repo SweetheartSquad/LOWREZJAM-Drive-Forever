@@ -290,9 +290,16 @@ void MY_Scene_Main::update(Step * _step){
 	}else{
 		speed = 0;
 	}
+	distanceTravelled += speed;
 
 	updateSpeedUI();
 	
+
+	if(health < 0){
+		game->scenes["gameover"] = new GameOver(game, distanceTravelled);
+		game->switchScene("gameover", true);
+	}
+
 	// Scene update
 	uiLayer->resize(0, 64, 0, 64);
 	MY_Scene_Base::update(_step);

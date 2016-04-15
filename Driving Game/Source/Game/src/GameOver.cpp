@@ -10,21 +10,6 @@ GameOver::GameOver(Game * _game, float _score) :
 	MY_Scene_Base(_game),
 	done(false)
 {
-	std::string pic = "ENDING_";
-
-	if(_score > 300){
-		pic += "5";
-	}else if(_score > 200){
-		pic += "4";
-	}else if(_score > 125){
-		pic += "3";
-	}else if(_score > 50){
-		pic += "2";
-	}else{
-		pic += "1";
-	}
-
-
 	{
 	VerticalLinearLayout * vl = new VerticalLinearLayout(uiLayer->world);
 	uiLayer->addChild(vl);
@@ -36,9 +21,19 @@ GameOver::GameOver(Game * _game, float _score) :
 	vl->addChild(menu);
 	menu->setRationalHeight(1.f, vl);
 	menu->setSquareWidth(1.f);
-	menu->background->mesh->pushTexture2D(MY_ResourceManager::globalAssets->getTexture(pic)->texture);
+	menu->background->mesh->pushTexture2D(MY_ResourceManager::globalAssets->getTexture("ENDING")->texture);
 	menu->background->mesh->setScaleMode(GL_NEAREST);
 	}
+	TextArea * txt = new TextArea(uiLayer->world, font, textShader);
+	uiLayer->addChild(txt);
+	txt->setRationalHeight(1.f, uiLayer);
+	txt->setRationalWidth(1.f, uiLayer);
+	txt->verticalAlignment = kMIDDLE;
+	txt->horizontalAlignment = kCENTER;
+	txt->setRenderMode(kTEXTURE);
+	txt->setWrapMode(kWORD);
+
+	txt->setText("Drove " + std::to_string((int)glm::floor(_score*0.01f)) + " km");
 
 	Timeout * doneTimeout = new Timeout(0.5f, [this](sweet::Event * _event){
 		done = true;
