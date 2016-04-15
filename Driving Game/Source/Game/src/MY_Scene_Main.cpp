@@ -201,7 +201,11 @@ void MY_Scene_Main::update(Step * _step){
 	if(_step->cycles % 10 == 0){
 		std::wstring s = txt->getText(false);
 		if(s.length() > 0){
-			txt->setText(txt->getText(false).substr(1));
+			std::wstring t = txt->getText(false);
+			if(t.size() > 15 && t.at(15) != ' '){
+				MY_ResourceManager::globalAssets->getAudio("boop")->sound->play();
+			}
+			txt->setText(t.substr(1));
 		}else if(waitTimeout->complete || !waitTimeout->active){
 			waitTimeout->targetSeconds = sweet::NumberUtils::randomFloat(5.f, 10.f);
 			waitTimeout->restart();
@@ -342,6 +346,7 @@ std::wstring MY_Scene_Main::getLine(){
 
 void MY_Scene_Main::damage(){
 	--health;
+	MY_ResourceManager::globalAssets->getAudio("bam")->sound->play();
 	damageTimeout->restart();
 	updateHealthUI();
 }
@@ -351,6 +356,10 @@ void MY_Scene_Main::updateHealthUI(){
 }
 
 void MY_Scene_Main::updateSpeedUI(){
+	static int curSpeed = -1;
 	int s = (int)glm::clamp(speed * 4.f / 0.3f, 0.f, 4.f);
-	speedUI->background->mesh->replaceTextures(MY_ResourceManager::globalAssets->getTexture("speed_" + std::to_string(s))->texture);
+	if(s != curSpeed){
+		curSpeed = s;
+		speedUI->background->mesh->replaceTextures(MY_ResourceManager::globalAssets->getTexture("speed_" + std::to_string(curSpeed))->texture);
+	}
 }

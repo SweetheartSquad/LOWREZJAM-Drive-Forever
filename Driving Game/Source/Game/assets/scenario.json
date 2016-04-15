@@ -111,5 +111,29 @@
       "antiAliased":false,
       "size": "12.8%"
     }
+
+
+    ,{
+      "type": "audio",
+      "id": "bam",
+      "src": "bam.wav",
+      "category":"sfx",
+      "stream":false,
+      "positional":false
+    },{
+      "type": "audio",
+      "id": "boop",
+      "src": "boop.wav",
+      "category":"sfx",
+      "stream":false,
+      "positional":false
+    },{
+      "type": "audio",
+      "id": "BGM",
+      "src": "song.wav",
+      "category":"music",
+      "stream":false,
+      "positional":false
+    }
   ]
 }

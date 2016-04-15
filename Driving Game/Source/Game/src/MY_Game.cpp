@@ -13,6 +13,7 @@ MY_Game::MY_Game() :
 	lastSize(0)
 {
 	sweet::setCursorMode(GLFW_CURSOR_NORMAL);
+	MY_ResourceManager::globalAssets->getAudio("BGM")->sound->play(true);
 }
 
 MY_Game::~MY_Game(){}
