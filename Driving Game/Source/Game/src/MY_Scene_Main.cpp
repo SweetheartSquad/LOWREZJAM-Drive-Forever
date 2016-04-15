@@ -19,6 +19,7 @@
 #include <sweet\UI.h>
 
 #include <MY_Game.h>
+#include <GameOver.h>
 
 MY_Scene_Main::MY_Scene_Main(Game * _game) :
 	MY_Scene_Base(_game),
@@ -29,7 +30,8 @@ MY_Scene_Main::MY_Scene_Main(Game * _game) :
 	speed(0),
 	length(100),
 	gap(3),
-	health(3)
+	health(3),
+	distanceTravelled(0)
 {
 	// memory management
 	screenSurface->incrementReferenceCount();
