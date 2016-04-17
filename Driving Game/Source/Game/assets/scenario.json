@@ -121,21 +121,21 @@
     ,{
       "type": "audio",
       "id": "bam",
-      "src": "bam.wav",
+      "src": "bam.ogg",
       "category":"sfx",
       "stream":false,
       "positional":false
     },{
       "type": "audio",
       "id": "boop",
-      "src": "boop.wav",
+      "src": "boop.ogg",
       "category":"sfx",
       "stream":false,
       "positional":false
     },{
       "type": "audio",
       "id": "BGM",
-      "src": "song.wav",
+      "src": "song.ogg",
       "category":"music",
       "stream":false,
       "positional":false
