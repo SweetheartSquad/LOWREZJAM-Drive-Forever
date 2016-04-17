@@ -26,7 +26,7 @@ GameOver::GameOver(Game * _game, float _score) :
 	}
 	TextArea * txt = new TextArea(uiLayer->world, font, textShader);
 	uiLayer->addChild(txt);
-	txt->setRationalHeight(1.f, uiLayer);
+	txt->setRationalHeight(32.f/64.f, uiLayer);
 	txt->setRationalWidth(1.f, uiLayer);
 	txt->verticalAlignment = kMIDDLE;
 	txt->horizontalAlignment = kCENTER;
