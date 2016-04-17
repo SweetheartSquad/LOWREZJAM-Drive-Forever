@@ -3,11 +3,15 @@
     "                *phrases*"
   ],
   "phrases": [
-    "test",
-    "test 2",
-    "test 3"
+    "where are you going, exactly?",
+    "what is your plan here?",
+    "you've been driving for hours.",
+    "when are you going to get your life together?",
+    "you can't just drive away from your life.",
+    "seriously, what is your plan?",
+    "this is never going to end."
   ],
   "firstLine":[
-    "                Tutorial text or something."
+    "                You're going to have to keep this up forever."
   ]
 }
