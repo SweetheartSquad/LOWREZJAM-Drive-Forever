@@ -9,7 +9,7 @@
 	"monitor": 0,
 	"useLibOVR": false,
 	"nodeCounting": false,
-	"title": "DRIVE FOREVER",
+	"title": "Drive Forever",
 	"gain":{
 		"master": 1,
 		"music": 1,
