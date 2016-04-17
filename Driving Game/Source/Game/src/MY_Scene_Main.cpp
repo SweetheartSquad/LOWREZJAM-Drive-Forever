@@ -214,12 +214,14 @@ void MY_Scene_Main::update(Step * _step){
 		}
 	}
 
-
+	
+#ifdef _DEBUG
 	if(keyboard->keyJustDown(GLFW_KEY_L)){
 		screenSurfaceShader->unload();
 		screenSurfaceShader->loadFromFile(screenSurfaceShader->vertSource, screenSurfaceShader->fragSource);
 		screenSurfaceShader->load();
 	}
+#endif
 
 	// move obstacles
 	
